@@ -24,11 +24,19 @@ while True:
     if commandArr[0] == 'exit':
         me.exit()
     elif commandArr[0] == 'print':
-        me.printNetwork()
-    elif commandArr[0] == 'E':
-        me.printE()
-    elif commandArr[0] == 'update':
-        me.updateNetworkImage()
+        optionsArr = commandArr[1].split(',')
+        if 'N' in optionsArr:
+            me.printNetwork()
+        if 'T' in optionsArr:
+            me.printT()
+        if 'L' in optionsArr:
+            me.printL()
+        if 'S' in optionsArr:
+            me.printS()
+        if 'E' in optionsArr:
+            me.printE()
+    # elif commandArr[0] == 'update':
+    #     me.updateNetworkImage()
     elif commandArr[0] == 'internal':
         me.internalEvent()
     elif commandArr[0] == 'external':

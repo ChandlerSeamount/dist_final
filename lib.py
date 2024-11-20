@@ -53,21 +53,6 @@ class Node():
 
         self.updateNetworkImage()
 
-    # prints the network image from the node's perspective
-    def printNetwork(self):
-        # make sure the network image is up to date
-        self.updateNetworkImage()
-        # print the network in a readable format
-        for row in self.networkImage:
-            print(row)
-
-        print('')
-        print('T: '+ str(self.T))
-        print('L: '+ str(self.L))
-        print('')
-        for row in self.S:
-            print(row)
-        print('')
 
     # Determine which parts of the network are reachable
     def calculateNeighbors(self):
@@ -102,7 +87,7 @@ class Node():
     # updates local image of network
     def updateNetworkImage(self):
 
-        newImage = [ [' ']*self.networkSize for i in range(self.networkSize)]
+        newImage = [ ['-']*self.networkSize for i in range(self.networkSize)]
         newImage[self.row][self.column] = str(self.myID)
 
         for neighbor in self.neighbors:
@@ -110,7 +95,7 @@ class Node():
                 continue
             if neighbor[0] >= self.networkSize or neighbor[1] >= self.networkSize:
                 continue
-            newImage[neighbor[0]][neighbor[1]] = '-'
+            newImage[neighbor[0]][neighbor[1]] = '+'
 
         for neighbor in self.activeNeighbors:
             newImage[neighbor[0]][neighbor[1]] = str(neighbor[2])
@@ -382,7 +367,31 @@ class Node():
     def isActive(self):
         return self.active
 
+    # print different values
+    # prints the network image from the node's perspective
+    def printNetwork(self):
+        # make sure the network image is up to date
+        self.updateNetworkImage()
+        # print the network in a readable format
+        for row in self.networkImage:
+            result = '|'
+            for x in row:
+                result += x
+            print(result+'|')
+
+    def printT(self):
+        print('T: '+ str(self.T))
+    
+    def printL(self):
+        print('L: '+ str(self.L))
+
+    def printS(self):
+        print('S:')
+        for row in self.S:
+            print(row)
+
     def printE(self):
+        print('E:')
         for event in self.e:
             print(event)
 
