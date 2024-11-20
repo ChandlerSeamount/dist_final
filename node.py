@@ -24,6 +24,9 @@ while True:
     if commandArr[0] == 'exit':
         me.exit()
     elif commandArr[0] == 'print':
+        if len(commandArr) == 1:
+            print("Make sure to include print arguments")
+            continue
         optionsArr = commandArr[1].split(',')
         if 'N' in optionsArr:
             me.printNetwork()
@@ -40,6 +43,9 @@ while True:
     elif commandArr[0] == 'internal':
         me.internalEvent()
     elif commandArr[0] == 'external':
+        if len(commandArr) == 1:
+            print("Make sure to include destination node")
+            continue
         me.externalSend(int(commandArr[1]))
     elif commandArr[0] == 'snapshot':
         me.getSnapshot()
