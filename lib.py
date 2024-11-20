@@ -53,7 +53,6 @@ class Node():
 
         self.updateNetworkImage()
 
-
     # Determine which parts of the network are reachable
     def calculateNeighbors(self):
         neighbors = []
@@ -262,12 +261,13 @@ class Node():
                 msgArr = msgType.split('|')
                 snapshot.append([senderID, msgArr[1]])
 
-
     def updateLocation(self, newLocation):
+        # update location and log move
         self.myLocation = newLocation
         self.myPort = self.basis + self.myLocation
         self.row = int(self.myLocation / self.networkSize)
         self.column = self.myLocation % self.networkSize
+        self.internalEvent() # logs the movement event
 
         # stop listening from old location
         self.listenP.terminate()
@@ -285,6 +285,7 @@ class Node():
         # look at network again
         self.neighbors = self.calculateNeighbors()
 
+        
         self.checkForNeighbors()
         time.sleep(2)
         self.updateNetworkImage()
@@ -326,6 +327,8 @@ class Node():
                 self.send('External', neighbor[3]) # neighbor location
                 break
 
+    # ask everyone for their locate variable corresponding to L
+    # wait for their responses and print the results
     def getSnapshot(self):
         self.snapshot[:] = []
         self.globalBroadcast('Snapshot?')
@@ -380,10 +383,10 @@ class Node():
             print(result+'|')
 
     def printT(self):
-        print('T: '+ str(self.T))
+        print('T:\n'+ str(self.T))
     
     def printL(self):
-        print('L: '+ str(self.L))
+        print('L:\n'+ str(self.L))
 
     def printS(self):
         print('S:')
@@ -419,7 +422,6 @@ class Node():
                     self.updateS(self.S, tempS, tempS)
             # move for real
             self.updateLocation(self.myLocation - self.networkSize)
-            self.internalEvent()
 
     def moveDown(self):
         # self.internalEvent()
@@ -446,7 +448,6 @@ class Node():
 
             # move for real
             self.updateLocation(self.myLocation + self.networkSize)
-            self.internalEvent()
 
     def moveLeft(self):
         # self.internalEvent()
@@ -472,7 +473,6 @@ class Node():
                     self.updateS(self.S, tempS, tempS)
             # move for real
             self.updateLocation(self.myLocation - 1)
-            self.internalEvent()
 
     def moveRight(self):
         # self.internalEvent()
@@ -498,7 +498,6 @@ class Node():
                     self.updateS(self.S, tempS, tempS)
             # move for real
             self.updateLocation(self.myLocation + 1)
-            self.internalEvent()
 
     def exit(self):
         self.broadcast('Goodbye')

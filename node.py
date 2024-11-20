@@ -11,7 +11,7 @@ myID = int(sys.argv[2])
 sizeOfNetwork = 8
 numNodes = 3
 name = "isengard.mines.edu"
-basisPort = 56955
+basisPort = 57955
 
 me = Node(sizeOfNetwork, myLocation, name, basisPort, numNodes, myID)
 
