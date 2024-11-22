@@ -21,9 +21,7 @@ while True:
 
     commandArr = command.split(' ')
 
-    if commandArr[0] == 'exit':
-        me.exit()
-    elif commandArr[0] == 'print':
+    if commandArr[0] == 'print':
         if len(commandArr) == 1:
             print("Make sure to include print arguments")
             continue
@@ -38,8 +36,6 @@ while True:
             me.printS()
         if 'E' in optionsArr:
             me.printE()
-    # elif commandArr[0] == 'update':
-    #     me.updateNetworkImage()
     elif commandArr[0] == 'internal':
         me.internalEvent()
     elif commandArr[0] == 'external':
@@ -57,6 +53,8 @@ while True:
         me.moveLeft()
     elif commandArr[0] == 'move-right':
         me.moveRight()
+    elif commandArr[0] == 'exit':
+        me.exit()
     else:
         print('Command not recognized')
 

@@ -200,6 +200,7 @@ class Node():
                         for i in range(self.numNodes):
                             L[i] = T[i]
 
+            # node moves away
             elif msgType == 'Goodbye':
                 # update activeNeighbors
                 # remove old location (if it exists)
@@ -229,6 +230,39 @@ class Node():
                     for i in range(self.numNodes):
                         L[i] = T[i]
             
+            # node exits network
+            elif msgType == 'Exiting':
+                # update activeNeighbors
+                # remove old location (if it exists)
+                for neighbor in activeNeighbors:
+                    if neighbor[2] == senderID:
+                        activeNeighbors.remove(neighbor)
+                
+                # slightly different from 'Off' from paper
+                # updates topology matrix to still be symmetric
+                # remove from connected list
+                connectedNeighbors.remove(senderID)
+                # update T
+                T[self.myID] += 1
+                # update S
+                tempS = []
+                for row in S:
+                    tempS.append(row)
+                tempS[self.myID][senderID] += 1
+                tempS[senderID][self.myID] += 1
+                tempS[senderID][senderID] += 1
+                self.updateS(S, tempS, tempS)
+
+                # record event in e
+                tempT = []
+                for x in T:
+                    tempT.append(x)
+                e.append([tempT, self.myLocation])
+                # update L if S is consistent
+                if self.isSymmetric(S):
+                    for i in range(self.numNodes):
+                        L[i] = T[i]
+
             elif msgType == 'External':
                 # 'Receive from P' from paper
                 # update T
@@ -500,7 +534,7 @@ class Node():
             self.updateLocation(self.myLocation + 1)
 
     def exit(self):
-        self.broadcast('Goodbye')
+        self.broadcast('Exiting')
         self.listenP.terminate()
         self.listenP.join()
         self.active = False
