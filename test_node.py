@@ -15,7 +15,7 @@ class TestNode(unittest.TestCase):
         with patch("lib.socket") as MockSocket, patch("lib.multiprocessing.Process") as MockProcess:
             self.mock_socket = MockSocket.return_value
             self.mock_process = MockProcess.return_value
-            self.mock_process.start = MagicMock()  #start method
+            self.mock_process.start = MagicMock()  #Start method
             self.node = Node(
                 networkSize=self.network_size,
                 location=0,
@@ -55,6 +55,35 @@ class TestNode(unittest.TestCase):
         self.node.exit()
         self.assertFalse(self.node.isActive())
 
+    def test_snapshot_initialization(self):
+        """Test that a snapshot is initialized correctly."""
+        self.node.getSnapshot()
+        snapshot = list(self.node.snapshot)  #Convert to list
+        self.assertIsNotNone(snapshot)
+        self.assertIsInstance(snapshot, list)
+
+    def test_snapshot_state_capture(self):
+        """Test that a snapshot captures the current state."""
+        self.node.T[self.node.myID] = 10  #Simulate state changes
+        self.node.getSnapshot()
+        snapshot = list(self.node.snapshot)  #Convert to list
+        self.assertGreater(len(snapshot), 0, "Snapshot is empty")  #Snapshot is not empty
+        self.assertEqual(snapshot[self.node.myID], 10)  #Check state is captured
+
+    def test_snapshot_consistency(self):
+        """Test that a snapshot is consistent across events."""
+        self.node.T[self.node.myID] = 5  #Simulate initial state
+        self.node.getSnapshot()
+        snapshot_before = list(self.node.snapshot)  #Convert to list
+
+        self.node.T[self.node.myID] = 10  #State change
+        self.node.getSnapshot()
+        snapshot_after = list(self.node.snapshot)
+
+        self.assertGreater(len(snapshot_after), 0, "Snapshot is empty after state change")  #Snapshot is not empty
+        self.assertNotEqual(snapshot_before, snapshot_after)  #Snapshots reflect changes
+        self.assertEqual(snapshot_after[self.node.myID], 10)  #Verify updated state
+
 class TestNodeNetwork(unittest.TestCase):
 
     def setUp(self):
@@ -68,7 +97,7 @@ class TestNodeNetwork(unittest.TestCase):
         with patch("lib.socket") as MockSocket, patch("lib.multiprocessing.Process") as MockProcess:
             self.mock_socket = MockSocket.return_value
             self.mock_process = MockProcess.return_value
-            self.mock_process.start = MagicMock()  #start method
+            self.mock_process.start = MagicMock()  #Start method
             for i in range(self.num_nodes):
                 node = Node(
                     networkSize=self.network_size,
